@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexa Lite | Bot Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #25D366; /* WhatsApp Green */
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow: hidden; /* Hide scroll during loading */
+        }
+
+        /* --- PRELOADER --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(37, 211, 102, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- LAYOUT --- */
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            opacity: 0; /* Hidden until loaded */
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav ul { list-style: none; }
+        nav li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: var(--transition);
+        }
+
+        nav li:hover, nav li.active {
+            background: rgba(37, 211, 102, 0.1);
+            color: var(--primary);
+        }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-badge {
+            background: rgba(37, 211, 102, 0.1);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary);
+        }
+
+        /* --- STAT CARDS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card h3 { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; }
+        .card p { font-size: 1.8rem; font-weight: 600; margin-top: 10px; }
+
+        /* --- LOGS TABLE --- */
+        .logs-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th { text-align: left; color: var(--text-dim); font-size: 0.9rem; padding: 10px; border-bottom: 1px solid #334155; }
+        td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid #334155; }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; color: var(--text-dim);">Initializing Flexa Lite...</p>
+    </div>
+
+    <div class="dashboard-container" id="main-content">
+        <aside>
+            <div class="logo">
+                <i class="fab fa-whatsapp"></i> Flexa Lite
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><i class="fas fa-home"></i> &nbsp; Overview</li>
+                    <li><i class="fas fa-robot"></i> &nbsp; Bot Settings</li>
+                    <li><i class="fas fa-users"></i> &nbsp; Contacts</li>
+                    <li><i class="fas fa-code"></i> &nbsp; API Keys</li>
+                    <li><i class="fas fa-cog"></i> &nbsp; System</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <header>
+                <h1>Dashboard</h1>
+                <div class="status-badge">● Bot Online</div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="card">
+                    <h3>Messages Sent</h3>
+                    <p>1,284</p>
+                </div>
+                <div class="card">
+                    <h3>Active Users</h3>
+                    <p>452</p>
+                </div>
+                <div class="card">
+                    <h3>Success Rate</h3>
+                    <p>99.2%</p>
+                </div>
+                <div class="card">
+                    <h3>Uptime</h3>
+                    <p>14d 6h</p>
+                </div>
+            </div>
+
+            <section class="logs-section">
+                <h2>Recent Activity</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>+1 234 567 890</td>
+                            <td>Command: /start</td>
+                            <td style="color: var(--primary)">Success</td>
+                            <td>2 mins ago</td>
+                        </tr>
+                        <tr>
+                            <td>+44 7700 9000</td>
+                            <td>Media Upload</td>
+                            <td style="color: var(--primary)">Success</td>
+                            <td>12 mins ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                const content = document.getElementById('main-content');
+                
+                loader.style.display = 'none';
+                content.style.opacity = '1';
+                document.body.style.overflow = 'auto';
+            }, 1500); // Simulated delay for professional feel
+        });
+    </script>
+</body>
+</html>
