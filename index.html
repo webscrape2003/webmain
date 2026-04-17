@@ -3,206 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flexa Lite | Enterprise Portal</title>
+    <title>Flexa Lite | Aura</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #020617;
-            --card-bg: rgba(15, 23, 42, 0.6);
+            --bg: #000000;
+            --surface: #0a0a0a;
             --accent: #22d3ee;
-            --accent-glow: rgba(34, 211, 238, 0.3);
-            --border: rgba(51, 65, 85, 0.4);
-            --text-main: #f8fafc;
-            --text-dim: #64748b;
-            --success: #10b981;
+            --text-main: #ffffff;
+            --text-dim: #666666;
+            --border: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
             background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 80%);
             color: var(--text-main);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            overflow: hidden;
         }
 
-        /* FLEXA LITE SYSTEM LOADER */
-        #loadingOverlay {
+        /* 1. FLEXA LITE STARTUP ANIMATION */
+        #bootScreen {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
+            inset: 0;
+            background: #000;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.6s ease;
         }
 
-        .loader-box { position: relative; width: 100px; height: 100px; }
-        .flexa-ring {
-            position: absolute; width: 100%; height: 100%;
-            border: 3px solid rgba(34, 211, 238, 0.1);
-            border-top-color: var(--accent);
+        .aura-ring {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-        .flexa-ring-inner {
-            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 3px solid transparent; border-bottom-color: #0ea5e9;
-            border-radius: 50%; animation: spin 1.5s linear infinite reverse;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            filter: blur(20px);
+            animation: pulse 2s infinite alternate;
         }
 
-        .brand-load { margin-top: 30px; text-align: center; }
-        .brand-text { font-weight: 800; font-size: 1.6rem; letter-spacing: 5px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-        .status-msg { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; display: block; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* MAIN DASHBOARD */
-        .container { width: 100%; max-width: 600px; opacity: 0; transform: translateY(30px); transition: 1s ease; }
-        .container.visible { opacity: 1; transform: translateY(0); }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2rem; font-weight: 800; }
-        .header span { color: var(--accent); }
-
-        /* SERVER GRID (6 SERVERS) */
-        .grid-title { font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; display: block; }
-        .server-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
-        
-        .srv-card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            padding: 15px; border-radius: 16px; cursor: pointer; transition: 0.3s;
+        .boot-text {
+            margin-top: -40px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInText 1.5s forwards 0.5s;
         }
-        .srv-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        .srv-card.active { border-color: var(--accent); background: rgba(34, 211, 238, 0.08); box-shadow: 0 0 20px rgba(34, 211, 238, 0.1); }
-        
-        .srv-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .srv-name { font-size: 0.85rem; font-weight: 800; color: #fff; }
-        .srv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
-        .srv-meta { font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--text-dim); }
 
-        /* NEW OPTIONS SECTION */
-        .options-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
-        .opt-item {
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border);
-            padding: 15px 10px; border-radius: 14px; text-align: center; cursor: pointer; transition: 0.3s;
-        }
-        .opt-item:hover { border-color: var(--accent); background: rgba(34, 211, 238, 0.05); }
-        .opt-item i { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; display: block; }
-        .opt-item span { font-size: 0.65rem; font-weight: 700; color: var(--text-main); display: block; }
+        @keyframes pulse { from { transform: scale(0.8); opacity: 0.3; } to { transform: scale(1.3); opacity: 0.6; } }
+        @keyframes fadeInText { to { opacity: 1; letter-spacing: 12px; } }
 
-        /* ACTION BUTTON */
-        .btn-action {
-            width: 100%; padding: 20px; border-radius: 18px; border: none;
-            background: var(--accent); color: var(--bg);
-            font-weight: 800; font-size: 1rem; text-transform: uppercase;
-            letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+        /* 2. MAIN INTERFACE */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 20px;
+            text-align: center;
+            opacity: 0;
+            transition: 1s ease;
         }
-        .btn-action:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
-        .btn-action:not(:disabled):hover { letter-spacing: 4px; box-shadow: 0 10px 30px var(--accent-glow); }
+
+        .app-container.show { opacity: 1; }
+
+        .logo-area { margin-bottom: 50px; }
+        .logo-area h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
+        .logo-area span { color: var(--accent); }
+
+        /* SERVER SELECTION - CLEAN LIST */
+        .srv-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .srv-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .srv-item:hover { border-color: #333; transform: scale(1.02); }
+
+        .srv-item.selected {
+            border-color: var(--accent);
+            background: rgba(34, 211, 238, 0.03);
+        }
+
+        .srv-info { text-align: left; }
+        .srv-name { display: block; font-weight: 600; font-size: 0.9rem; }
+        .srv-region { display: block; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+
+        .srv-ping {
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: rgba(34, 211, 238, 0.1);
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        /* CONNECT BUTTON - FLOATING DESIGN */
+        .btn-launch {
+            width: 100%;
+            padding: 22px;
+            border-radius: 24px;
+            border: none;
+            background: var(--text-main);
+            color: var(--bg);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 20px 40px rgba(255,255,255,0.1);
+        }
+
+        .btn-launch:disabled { background: #1a1a1a; color: #444; box-shadow: none; cursor: not-allowed; }
+        .btn-launch:not(:disabled):hover { transform: translateY(-3px); box-shadow: 0 25px 50px rgba(34, 211, 238, 0.2); }
+
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay">
-        <div class="loader-box">
-            <div class="flexa-ring"></div>
-            <div class="flexa-ring-inner"></div>
-        </div>
-        <div class="brand-load">
-            <span class="brand-text">FLEXA LITE</span>
-            <span class="status-msg" id="statusMsg">Syncing with Core...</span>
-        </div>
+    <div id="bootScreen">
+        <div class="aura-ring"></div>
+        <div class="boot-text">Flexa</div>
     </div>
 
-    <div class="container" id="dashboard">
-        <div class="header">
-            <h1>FLEXA<span>LITE</span></h1>
+    <div class="app-container" id="app">
+        <div class="logo-area">
+            <h1>Flexa<span>Lite</span></h1>
+            <p style="color:var(--text-dim); font-size: 0.8rem; margin-top: 5px;">Secure Node Gateway</p>
         </div>
 
-        <span class="grid-title">Infrastructure Clusters</span>
-        <div class="server-grid">
-            <div class="srv-card active" onclick="sel(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
-                <div class="srv-top"><span class="srv-name">PREMIUM 01</span><div class="srv-dot"></div></div>
-                <span class="srv-meta">US-EAST | 12ms</span>
+        <div class="srv-list">
+            <div class="srv-item" onclick="pick(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
+                <div class="srv-info">
+                    <span class="srv-name">Cluster Alpha</span>
+                    <span class="srv-region">North America</span>
+                </div>
+                <div class="srv-ping">12ms</div>
             </div>
-            <div class="srv-card" onclick="sel(this, 'https://srv-02.com')">
-                <div class="srv-top"><span class="srv-name">FAST-NET 02</span><div class="srv-dot"></div></div>
-                <span class="srv-meta">EU-WEST | 28ms</span>
+
+            <div class="srv-item" onclick="pick(this, 'https://srv-two.com')">
+                <div class="srv-info">
+                    <span class="srv-name">Cluster Bravo</span>
+                    <span class="srv-region">Europe Central</span>
+                </div>
+                <div class="srv-ping">24ms</div>
             </div>
-            <div class="srv-card" onclick="sel(this, 'https://srv-03.com')">
-                <div class="srv-top"><span class="srv-name">STABLE 03</span><div class="srv-dot"></div></div>
-                <span class="srv-meta">ASIA-S | 45ms</span>
-            </div>
-            <div class="srv-card" onclick="sel(this, 'https://srv-04.com')">
-                <div class="srv-top"><span class="srv-name">SECURE 04</span><div class="srv-dot"></div></div>
-                <span class="srv-meta">UK-LON | 18ms</span>
-            </div>
-            <div class="srv-card" onclick="sel(this, 'https://srv-05.com')">
-                <div class="srv-top"><span class="srv-name">SILENT 05</span><div class="srv-dot"></div></div>
-                <span class="srv-meta">GLOBAL | 60ms</span>
-            </div>
-            <div class="srv-card" onclick="sel(this, 'https://srv-06.com')">
-                <div class="srv-top"><span class="srv-name">RESERVE 06</span><div class="srv-dot" style="background:#f59e0b"></div></div>
-                <span class="srv-meta">BACKUP | 110ms</span>
+
+            <div class="srv-item" onclick="pick(this, 'https://srv-three.com')">
+                <div class="srv-info">
+                    <span class="srv-name">Cluster Delta</span>
+                    <span class="srv-region">Asia Pacific</span>
+                </div>
+                <div class="srv-ping">45ms</div>
             </div>
         </div>
 
-        <span class="grid-title">Additional Services</span>
-        <div class="options-row">
-            <div class="opt-item"><i class="fas fa-robot"></i><span>AUTO-BOT</span></div>
-            <div class="opt-item"><i class="fas fa-cloud-arrow-up"></i><span>DEPLOY</span></div>
-            <div class="opt-item"><i class="fas fa-plug"></i><span>PLUGINS</span></div>
-        </div>
-
-        <input type="hidden" id="finalUrl" value="https://mv-movie-cb473d451f3b.herokuapp.com/">
-        <button class="btn-action" id="connectBtn" onclick="launch()">Initialize Connection</button>
+        <input type="hidden" id="selectedUrl">
+        <button class="btn-launch" id="btn" disabled onclick="connect()">Connect Node</button>
     </div>
 
     <script>
-        // Entry Loading
+        // Start sequence
         window.onload = () => {
-            const overlay = document.getElementById('loadingOverlay');
-            const dash = document.getElementById('dashboard');
             setTimeout(() => {
-                overlay.style.opacity = '0';
+                document.getElementById('bootScreen').style.opacity = '0';
                 setTimeout(() => {
-                    overlay.style.display = 'none';
-                    dash.classList.add('visible');
-                }, 600);
-            }, 2500);
+                    document.getElementById('bootScreen').style.display = 'none';
+                    document.getElementById('app').classList.add('show');
+                }, 800);
+            }, 3000);
         };
 
-        // Server Select
-        function sel(el, url) {
-            document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('finalUrl').value = url;
+        // Selection
+        function pick(el, url) {
+            document.querySelectorAll('.srv-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selectedUrl').value = url;
+            document.getElementById('btn').disabled = false;
         }
 
         // Connection Loading
-        function launch() {
-            const url = document.getElementById('finalUrl').value;
-            const overlay = document.getElementById('loadingOverlay');
-            const msg = document.getElementById('statusMsg');
-
-            msg.innerText = "Encrypting Handshake...";
-            overlay.style.display = 'flex';
-            overlay.style.opacity = '1';
+        function connect() {
+            const url = document.getElementById('selectedUrl').value;
+            const boot = document.getElementById('bootScreen');
+            
+            // Show loading again with "Connecting"
+            document.querySelector('.boot-text').innerText = "Linking";
+            boot.style.display = 'flex';
+            setTimeout(() => boot.style.opacity = '1', 10);
 
             setTimeout(() => {
-                msg.innerText = "Redirecting to Flexa Lite...";
-                setTimeout(() => {
-                    window.location.href = url;
-                }, 1000);
+                window.location.href = url;
             }, 2000);
         }
     </script>
