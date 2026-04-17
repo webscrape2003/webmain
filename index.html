@@ -49,6 +49,9 @@
             animation: pulse 2s infinite;
         }
 
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
         /* SIDEBAR */
         .sidebar {
             width: 280px; background: var(--sidebar);
@@ -61,20 +64,18 @@
 
         .nav-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
-        /* MEDIA HUB (UPDATED) */
+        /* MEDIA HUB */
         .media-hub {
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: auto;
-            margin-bottom: 20px;
+            border-radius: 15px; padding: 15px;
+            margin-top: auto; margin-bottom: 20px;
         }
 
         .media-info { font-size: 0.65rem; color: var(--accent); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; text-align: center;}
         
-        .media-btns { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .media-btns i { cursor: pointer; transition: 0.2s; color: var(--text-main); font-size: 0.9rem; }
+        .media-btns { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; gap: 5px; }
+        .media-btns i { cursor: pointer; transition: 0.2s; color: var(--text-main); font-size: 0.85rem; }
         .media-btns i:hover { color: var(--accent); transform: scale(1.2); }
 
         .vol-slider {
@@ -126,8 +127,6 @@
         .ticker-item span { color: var(--accent); margin-left: 5px; }
 
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -137,7 +136,7 @@
         }
     </style>
 </head>
-<body>
+<body onclick="startAudio()">
 
     <div id="preloader">
         <div class="loader-ring"></div>
@@ -156,12 +155,12 @@
         </p>
 
         <div class="media-hub">
-            <div class="media-info"><i class="fas fa-music"></i> Media Control</div>
+            <div class="media-info"><i class="fas fa-music"></i> Audio Engine</div>
             <div class="media-btns">
-                <i class="fas fa-minus" title="Volume Down" onclick="controlMusic('volDown')"></i>
-                <i class="fas fa-play" title="Play" onclick="controlMusic('play')"></i>
-                <i class="fas fa-stop" title="Stop" onclick="controlMusic('stop')"></i>
-                <i class="fas fa-plus" title="Volume Up" onclick="controlMusic('volUp')"></i>
+                <i class="fas fa-volume-low" onclick="controlMusic('volDown')"></i>
+                <i class="fas fa-play" onclick="controlMusic('play')"></i>
+                <i class="fas fa-pause" onclick="controlMusic('stop')"></i>
+                <i class="fas fa-volume-high" onclick="controlMusic('volUp')"></i>
             </div>
             <input type="range" id="volRange" class="vol-slider" min="0" max="1" step="0.05" value="0.5" oninput="controlMusic('vol', this.value)">
         </div>
@@ -209,12 +208,12 @@
     <div class="live-ticker">
         <div class="ticker-wrap">
             <div class="ticker-content">
-                <div class="ticker-item"><i class="fas fa-robot"></i> BOT NAME: <span>FLEXA LITE V3</span></div>
+                <div class="ticker-item"><i class="fas fa-robot"></i> BOT: <span>FLEXA LITE V3</span></div>
                 <div class="ticker-item"><i class="fas fa-globe"></i> COUNTRY: <span>SRI LANKA</span></div>
                 <div class="ticker-item"><i class="fas fa-user-shield"></i> OWNER: <span>SAYED</span></div>
                 <div class="ticker-item"><i class="fas fa-phone"></i> CONTACT: <span>+94 77 XXXXXXX</span></div>
                 <div class="ticker-item"><i class="fas fa-code-branch"></i> VERSION: <span>3.1.0 STABLE</span></div>
-                <div class="ticker-item"><i class="fas fa-robot"></i> BOT NAME: <span>FLEXA LITE V3</span></div>
+                <div class="ticker-item"><i class="fas fa-robot"></i> BOT: <span>FLEXA LITE V3</span></div>
                 <div class="ticker-item"><i class="fas fa-user-shield"></i> OWNER: <span>SAYED</span></div>
             </div>
         </div>
@@ -223,6 +222,7 @@
     <script>
         const audio = document.getElementById('bgMusic');
         const volSlider = document.getElementById('volRange');
+        let hasInteracted = false;
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -232,17 +232,17 @@
             }, 2500);
         });
 
+        function startAudio() {
+            if (!hasInteracted) {
+                audio.play().catch(() => {});
+                hasInteracted = true;
+            }
+        }
+
         function controlMusic(action, value) {
-            if(action === 'play') {
-                audio.play().catch(e => console.log("User interaction required."));
-            }
-            if(action === 'stop') { 
-                audio.pause(); 
-                audio.currentTime = 0; 
-            }
-            if(action === 'vol') {
-                audio.volume = value;
-            }
+            if(action === 'play') audio.play();
+            if(action === 'stop') audio.pause();
+            if(action === 'vol') audio.volume = value;
             if(action === 'volUp') {
                 audio.volume = Math.min(1, audio.volume + 0.1);
                 volSlider.value = audio.volume;
@@ -258,8 +258,7 @@
             element.classList.add('active');
             document.getElementById('selectedUrl').value = url;
             document.getElementById('launchBtn').disabled = false;
-            // Play music on first click
-            audio.play().catch(e => console.log("Audio ready."));
+            startAudio();
         }
 
         function connect() {
