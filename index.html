@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flexa Lite | Aura</title>
+    <title>Flexa Lite | Enterprise Control</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #000000;
-            --surface: #0a0a0a;
+            --bg: #030712;
+            --sidebar: #090e1a;
             --accent: #22d3ee;
-            --text-main: #ffffff;
-            --text-dim: #666666;
-            --border: #1a1a1a;
+            --border: rgba(255, 255, 255, 0.05);
+            --card: rgba(17, 24, 39, 0.5);
+            --text-main: #f3f4f6;
+            --text-muted: #6b7280;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -24,194 +25,218 @@
             color: var(--text-main);
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
         }
 
-        /* 1. FLEXA LITE STARTUP ANIMATION */
-        #bootScreen {
+        /* FLEXA LITE PRE-LOADER */
+        #preloader {
             position: fixed;
             inset: 0;
             background: #000;
-            z-index: 9999;
+            z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        .aura-ring {
-            width: 80px;
-            height: 80px;
+        .loader-ring {
+            width: 60px;
+            height: 60px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent);
             border-radius: 50%;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            filter: blur(20px);
-            animation: pulse 2s infinite alternate;
+            animation: spin 0.8s linear infinite;
         }
 
-        .boot-text {
-            margin-top: -40px;
+        .loader-brand {
+            margin-top: 20px;
             font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             text-transform: uppercase;
-            opacity: 0;
-            animation: fadeInText 1.5s forwards 0.5s;
+            font-size: 0.9rem;
+            color: var(--accent);
+            animation: pulse 2s infinite;
         }
 
-        @keyframes pulse { from { transform: scale(0.8); opacity: 0.3; } to { transform: scale(1.3); opacity: 0.6; } }
-        @keyframes fadeInText { to { opacity: 1; letter-spacing: 12px; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        /* 2. MAIN INTERFACE */
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 20px;
-            text-align: center;
-            opacity: 0;
-            transition: 1s ease;
-        }
-
-        .app-container.show { opacity: 1; }
-
-        .logo-area { margin-bottom: 50px; }
-        .logo-area h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
-        .logo-area span { color: var(--accent); }
-
-        /* SERVER SELECTION - CLEAN LIST */
-        .srv-list {
+        /* DASHBOARD LAYOUT */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 40px;
         }
 
-        .srv-item {
-            background: var(--surface);
+        .main-content {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+            background: radial-gradient(at top left, #0f172a 0%, #030712 100%);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; margin-bottom: 50px; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+
+        .nav-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+
+        /* PROFESSIONAL SERVER CARDS */
+        .server-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .srv-node {
+            background: var(--card);
             border: 1px solid var(--border);
+            padding: 24px;
             border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             cursor: pointer;
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .srv-item:hover { border-color: #333; transform: scale(1.02); }
+        .srv-node:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            background: rgba(34, 211, 238, 0.02);
+            transform: translateY(-4px);
+        }
 
-        .srv-item.selected {
+        .srv-node.active {
             border-color: var(--accent);
-            background: rgba(34, 211, 238, 0.03);
+            background: rgba(34, 211, 238, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(34, 211, 238, 0.2);
         }
 
-        .srv-info { text-align: left; }
-        .srv-name { display: block; font-weight: 600; font-size: 0.9rem; }
-        .srv-region { display: block; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+        .srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .srv-icon { font-size: 1.2rem; color: var(--accent); }
+        .srv-status { font-size: 0.6rem; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 6px; font-weight: 700; }
 
-        .srv-ping {
-            font-size: 0.7rem;
-            color: var(--accent);
-            background: rgba(34, 211, 238, 0.1);
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-weight: 600;
+        .srv-name { font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 4px; }
+        .srv-meta { font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono'; }
+
+        /* ACTION AREA */
+        .footer-action {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
         }
 
-        /* CONNECT BUTTON - FLOATING DESIGN */
         .btn-launch {
-            width: 100%;
-            padding: 22px;
-            border-radius: 24px;
-            border: none;
-            background: var(--text-main);
+            background: var(--accent);
             color: var(--bg);
+            padding: 16px 40px;
+            border-radius: 14px;
+            border: none;
             font-weight: 800;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             cursor: pointer;
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.2);
             transition: 0.3s;
-            box-shadow: 0 20px 40px rgba(255,255,255,0.1);
         }
 
-        .btn-launch:disabled { background: #1a1a1a; color: #444; box-shadow: none; cursor: not-allowed; }
-        .btn-launch:not(:disabled):hover { transform: translateY(-3px); box-shadow: 0 25px 50px rgba(34, 211, 238, 0.2); }
+        .btn-launch:disabled { background: #1f2937; color: #4b5563; box-shadow: none; cursor: not-allowed; }
+        .btn-launch:not(:disabled):hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(34, 211, 238, 0.4); }
 
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; padding: 20px; }
+            .main-content { padding: 20px; }
+            .footer-action { position: static; margin-top: 30px; width: 100%; }
+            .btn-launch { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="bootScreen">
-        <div class="aura-ring"></div>
-        <div class="boot-text">Flexa</div>
+    <div id="preloader">
+        <div class="loader-ring"></div>
+        <div class="loader-brand">Flexa Lite</div>
     </div>
 
-    <div class="app-container" id="app">
-        <div class="logo-area">
-            <h1>Flexa<span>Lite</span></h1>
-            <p style="color:var(--text-dim); font-size: 0.8rem; margin-top: 5px;">Secure Node Gateway</p>
+    <div class="sidebar">
+        <div class="logo">Flexa<span>Lite</span></div>
+        <div class="nav-label">System</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            Enterprise Multi-Node Infrastructure for WhatsApp Automation.
+        </p>
+    </div>
+
+    <div class="main-content">
+        <div class="nav-label">Available Clusters</div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 30px; letter-spacing: -1px;">Select Connection Node</h2>
+
+        <div class="server-container">
+            <div class="srv-node" onclick="select(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
+                <div class="srv-header">
+                    <i class="fas fa-server srv-icon"></i>
+                    <span class="srv-status">ONLINE</span>
+                </div>
+                <span class="srv-name">Cluster-Main 01</span>
+                <span class="srv-meta">Region: US-East | Latency: 12ms</span>
+            </div>
+
+            <div class="srv-node" onclick="select(this, 'https://srv-two.com')">
+                <div class="srv-header">
+                    <i class="fas fa-microchip srv-icon"></i>
+                    <span class="srv-status">ONLINE</span>
+                </div>
+                <span class="srv-name">Cluster-Fast 02</span>
+                <span class="srv-meta">Region: Singapore | Latency: 34ms</span>
+            </div>
+
+            <div class="srv-node" onclick="select(this, 'https://srv-three.com')">
+                <div class="srv-header">
+                    <i class="fas fa-shield-halved srv-icon"></i>
+                    <span class="srv-status">ONLINE</span>
+                </div>
+                <span class="srv-name">Cluster-Secure 03</span>
+                <span class="srv-meta">Region: EU-West | Latency: 22ms</span>
+            </div>
         </div>
 
-        <div class="srv-list">
-            <div class="srv-item" onclick="pick(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
-                <div class="srv-info">
-                    <span class="srv-name">Cluster Alpha</span>
-                    <span class="srv-region">North America</span>
-                </div>
-                <div class="srv-ping">12ms</div>
-            </div>
-
-            <div class="srv-item" onclick="pick(this, 'https://srv-two.com')">
-                <div class="srv-info">
-                    <span class="srv-name">Cluster Bravo</span>
-                    <span class="srv-region">Europe Central</span>
-                </div>
-                <div class="srv-ping">24ms</div>
-            </div>
-
-            <div class="srv-item" onclick="pick(this, 'https://srv-three.com')">
-                <div class="srv-info">
-                    <span class="srv-name">Cluster Delta</span>
-                    <span class="srv-region">Asia Pacific</span>
-                </div>
-                <div class="srv-ping">45ms</div>
-            </div>
+        <div class="footer-action">
+            <input type="hidden" id="selectedUrl">
+            <button class="btn-launch" id="launchBtn" disabled onclick="connect()">Establish Connection</button>
         </div>
-
-        <input type="hidden" id="selectedUrl">
-        <button class="btn-launch" id="btn" disabled onclick="connect()">Connect Node</button>
     </div>
 
     <script>
-        // Start sequence
-        window.onload = () => {
+        // Initial Startup Animation
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                document.getElementById('bootScreen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('bootScreen').style.display = 'none';
-                    document.getElementById('app').classList.add('show');
-                }, 800);
-            }, 3000);
-        };
+                const loader = document.getElementById('preloader');
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.visibility = 'hidden'; }, 800);
+            }, 2500);
+        });
 
-        // Selection
-        function pick(el, url) {
-            document.querySelectorAll('.srv-item').forEach(i => i.classList.remove('selected'));
-            el.classList.add('selected');
+        // Server Selection Logic
+        function select(element, url) {
+            document.querySelectorAll('.srv-node').forEach(n => n.classList.remove('active'));
+            element.classList.add('active');
             document.getElementById('selectedUrl').value = url;
-            document.getElementById('btn').disabled = false;
+            document.getElementById('launchBtn').disabled = false;
         }
 
-        // Connection Loading
+        // Redirect & Connect Logic
         function connect() {
             const url = document.getElementById('selectedUrl').value;
-            const boot = document.getElementById('bootScreen');
+            const loader = document.getElementById('preloader');
             
-            // Show loading again with "Connecting"
-            document.querySelector('.boot-text').innerText = "Linking";
-            boot.style.display = 'flex';
-            setTimeout(() => boot.style.opacity = '1', 10);
+            // Show loader again for redirection
+            loader.style.visibility = 'visible';
+            loader.style.opacity = '1';
+            document.querySelector('.loader-brand').innerText = "Linking Node";
 
             setTimeout(() => {
                 window.location.href = url;
