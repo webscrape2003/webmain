@@ -2,22 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Selection | Professional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Server Selection | Flexa Lite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg: #050a18;
-            --card-bg: rgba(16, 25, 47, 0.7);
+            --card-bg: rgba(15, 23, 42, 0.7);
             --accent: #22d3ee;
             --accent-glow: rgba(34, 211, 238, 0.2);
             --text: #f8fafc;
             --text-dim: #94a3b8;
             --border: rgba(51, 65, 85, 0.5);
             --success: #10b981;
+            --warning: #f59e0b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
             background-color: var(--bg);
@@ -28,33 +31,83 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
         }
 
+        /* FLEXA LITE LOADING ANIMATION */
+        #loadingOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            backdrop-filter: blur(12px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .flexa-loader {
+            width: 100px;
+            height: 100px;
+            border: 4px solid rgba(34, 211, 238, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            position: relative;
+        }
+
+        .flexa-loader::after {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 4px solid transparent;
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        .loading-text {
+            margin-top: 25px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        .bot-name-anim {
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 1.4rem;
+            text-shadow: 0 0 20px var(--accent-glow);
+            display: block;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* MAIN CONTAINER */
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             text-align: center;
         }
 
-        h2 { font-size: 2rem; margin-bottom: 10px; letter-spacing: -1px; }
-        p.subtitle { color: var(--text-dim); margin-bottom: 40px; }
+        h2 { font-size: 2.2rem; margin-bottom: 10px; letter-spacing: -1px; font-weight: 800; }
+        p.subtitle { color: var(--text-dim); margin-bottom: 40px; font-weight: 400; }
 
-        /* Server Grid */
+        /* SERVER GRID */
         .server-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
         .server-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
             text-align: left;
         }
 
@@ -66,7 +119,8 @@
 
         .server-card.selected {
             border-color: var(--accent);
-            background: rgba(34, 211, 238, 0.05);
+            background: rgba(34, 211, 238, 0.08);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .server-card.selected::after {
@@ -77,74 +131,84 @@
             top: 15px;
             right: 15px;
             color: var(--accent);
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .server-icon {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--accent);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .server-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
-        .server-meta { color: var(--text-dim); font-size: 0.85rem; display: flex; align-items: center; gap: 10px; }
+        .server-name { font-weight: 800; font-size: 1rem; margin-bottom: 4px; color: white; }
+        .server-meta { color: var(--text-dim); font-size: 0.75rem; display: flex; align-items: center; gap: 8px; }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background: var(--success);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--success);
         }
 
         .ping-badge {
+            font-family: 'JetBrains Mono', monospace;
             background: rgba(255,255,255,0.05);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            border: 1px solid var(--border);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: var(--success);
         }
 
-        /* Action Button */
+        /* ACTION AREA */
         .action-container { margin-top: 40px; }
         .btn-connect {
             background: var(--accent);
             color: #050a18;
             border: none;
-            padding: 16px 60px;
-            border-radius: 14px;
+            padding: 18px 80px;
+            border-radius: 16px;
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
         .btn-connect:disabled {
             background: #1e293b;
             color: var(--text-dim);
             cursor: not-allowed;
+            letter-spacing: 1px;
         }
 
         .btn-connect:not(:disabled):hover {
-            opacity: 0.9;
-            box-shadow: 0 10px 25px var(--accent-glow);
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px var(--accent-glow);
         }
     </style>
 </head>
 <body>
 
+<div id="loadingOverlay">
+    <div class="flexa-loader"></div>
+    <div class="loading-text">
+        <span class="bot-name-anim">FLEXA LITE</span>
+        <span style="color:white; font-size: 0.7rem; font-weight: 400;">INITIALIZING SECURE SESSION...</span>
+    </div>
+</div>
+
 <div class="container">
-    <h2>Select Premium Server</h2>
-    <p class="subtitle">Choose a high-speed node to begin your session</p>
+    <h2>Select Premium Node</h2>
+    <p class="subtitle">Select a high-speed infrastructure to deploy Flexa Lite</p>
 
     <div class="server-grid" id="serverGrid">
         <div class="server-card" onclick="selectServer(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
@@ -152,55 +216,74 @@
             <div class="server-name">Premium Node 01</div>
             <div class="server-meta">
                 <span class="status-dot"></span>
-                Online
+                <span>Active</span>
+                <span class="ping-badge">12ms</span>
+            </div>
+        </div>
+
+        <div class="server-card" onclick="selectServer(this, 'https://server-two.herokuapp.com/')">
+            <div class="server-icon"><i class="fas fa-rocket"></i></div>
+            <div class="server-name">High-Speed 02</div>
+            <div class="server-meta">
+                <span class="status-dot"></span>
+                <span>Active</span>
                 <span class="ping-badge">24ms</span>
             </div>
         </div>
 
-        <div class="server-card" onclick="selectServer(this, 'https://server-two-api.com')">
-            <div class="server-icon"><i class="fas fa-rocket"></i></div>
-            <div class="server-name">Fast Server 02</div>
+        <div class="server-card" onclick="selectServer(this, 'https://server-three.herokuapp.com/')">
+            <div class="server-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="server-name">Secure Node 03</div>
             <div class="server-meta">
                 <span class="status-dot"></span>
-                Online
-                <span class="ping-badge">45ms</span>
+                <span>Active</span>
+                <span class="ping-badge">18ms</span>
             </div>
         </div>
 
-        <div class="server-card" onclick="selectServer(this, 'https://server-three-api.com')">
-            <div class="server-icon"><i class="fas fa-shield-halved"></i></div>
-            <div class="server-name">Stable Node 03</div>
+        <div class="server-card" onclick="selectServer(this, 'https://server-four.herokuapp.com/')">
+            <div class="server-icon"><i class="fas fa-microchip"></i></div>
+            <div class="server-name">Lite Node 04</div>
             <div class="server-meta">
-                <span class="status-dot"></span>
-                Online
-                <span class="ping-badge">12ms</span>
+                <span class="status-dot" style="background:var(--warning); box-shadow: 0 0 10px var(--warning);"></span>
+                <span>Busy</span>
+                <span class="ping-badge" style="color:var(--warning)">85ms</span>
             </div>
         </div>
     </div>
 
     <div class="action-container">
         <input type="hidden" id="selectedUrl" value="">
-        <button class="btn-connect" id="connectBtn" disabled onclick="handleConnect()">Proceed to Pair</button>
+        <button class="btn-connect" id="connectBtn" disabled onclick="handleConnect()">Initialize Connection</button>
     </div>
 </div>
 
 <script>
     function selectServer(element, url) {
-        // Remove selection from others
+        // Clear previous selection
         document.querySelectorAll('.server-card').forEach(card => card.classList.remove('selected'));
         
-        // Add selection to clicked
+        // Apply new selection
         element.classList.add('selected');
         
-        // Update hidden value and enable button
+        // Update values
         document.getElementById('selectedUrl').value = url;
         document.getElementById('connectBtn').disabled = false;
     }
 
     function handleConnect() {
         const url = document.getElementById('selectedUrl').value;
-        alert("Connecting to: " + url);
-        // Here you would redirect or trigger your pairing logic
+        const loader = document.getElementById('loadingOverlay');
+        
+        // Trigger Flexa Lite Loading
+        loader.style.display = 'flex';
+
+        // Simulate connection delay for effect
+        setTimeout(() => {
+            loader.style.display = 'none';
+            alert("Successfully connected to: " + url + "\nDeploying Flexa Lite...");
+            // Your pairing redirection or logic goes here
+        }, 3000);
     }
 </script>
 
