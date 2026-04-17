@@ -16,6 +16,8 @@
             --card: rgba(17, 24, 39, 0.5);
             --text-main: #f3f4f6;
             --text-muted: #6b7280;
+            --online: #10b981;
+            --offline: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -28,7 +30,7 @@
             overflow: hidden;
         }
 
-        /* FLEXA LITE PRE-LOADER */
+        /* PRELOADER */
         #preloader {
             position: fixed;
             inset: 0;
@@ -85,7 +87,7 @@
 
         .nav-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
-        /* PROFESSIONAL SERVER CARDS */
+        /* SERVER CARDS */
         .server-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -117,7 +119,10 @@
 
         .srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
         .srv-icon { font-size: 1.2rem; color: var(--accent); }
-        .srv-status { font-size: 0.6rem; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 6px; font-weight: 700; }
+        
+        .srv-status { font-size: 0.6rem; padding: 4px 8px; border-radius: 6px; font-weight: 700; }
+        .status-online { background: rgba(16, 185, 129, 0.1); color: var(--online); }
+        .status-offline { background: rgba(239, 68, 68, 0.1); color: var(--offline); }
 
         .srv-name { font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 4px; }
         .srv-meta { font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono'; }
@@ -145,7 +150,6 @@
         }
 
         .btn-launch:disabled { background: #1f2937; color: #4b5563; box-shadow: none; cursor: not-allowed; }
-        .btn-launch:not(:disabled):hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(34, 211, 238, 0.4); }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -179,28 +183,28 @@
             <div class="srv-node" onclick="select(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
                 <div class="srv-header">
                     <i class="fas fa-server srv-icon"></i>
-                    <span class="srv-status">ONLINE</span>
+                    <span class="srv-status status-online">ONLINE</span>
                 </div>
                 <span class="srv-name">Cluster-Main 01</span>
                 <span class="srv-meta">Region: US-East | Latency: 12ms</span>
             </div>
 
-            <div class="srv-node" onclick="select(this, 'https://srv-two.com')">
+            <div class="srv-node" style="opacity: 0.7; cursor: not-allowed;">
                 <div class="srv-header">
                     <i class="fas fa-microchip srv-icon"></i>
-                    <span class="srv-status">ONLINE</span>
+                    <span class="srv-status status-offline">OFFLINE</span>
                 </div>
                 <span class="srv-name">Cluster-Fast 02</span>
-                <span class="srv-meta">Region: Singapore | Latency: 34ms</span>
+                <span class="srv-meta">Region: Singapore | Latency: --</span>
             </div>
 
-            <div class="srv-node" onclick="select(this, 'https://srv-three.com')">
+            <div class="srv-node" style="opacity: 0.7; cursor: not-allowed;">
                 <div class="srv-header">
                     <i class="fas fa-shield-halved srv-icon"></i>
-                    <span class="srv-status">ONLINE</span>
+                    <span class="srv-status status-offline">OFFLINE</span>
                 </div>
                 <span class="srv-name">Cluster-Secure 03</span>
-                <span class="srv-meta">Region: EU-West | Latency: 22ms</span>
+                <span class="srv-meta">Region: EU-West | Latency: --</span>
             </div>
         </div>
 
@@ -211,7 +215,6 @@
     </div>
 
     <script>
-        // Initial Startup Animation
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('preloader');
@@ -220,7 +223,6 @@
             }, 2500);
         });
 
-        // Server Selection Logic
         function select(element, url) {
             document.querySelectorAll('.srv-node').forEach(n => n.classList.remove('active'));
             element.classList.add('active');
@@ -228,19 +230,13 @@
             document.getElementById('launchBtn').disabled = false;
         }
 
-        // Redirect & Connect Logic
         function connect() {
             const url = document.getElementById('selectedUrl').value;
             const loader = document.getElementById('preloader');
-            
-            // Show loader again for redirection
             loader.style.visibility = 'visible';
             loader.style.opacity = '1';
             document.querySelector('.loader-brand').innerText = "Linking Node";
-
-            setTimeout(() => {
-                window.location.href = url;
-            }, 2000);
+            setTimeout(() => { window.location.href = url; }, 2000);
         }
     </script>
 </body>
