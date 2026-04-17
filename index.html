@@ -160,8 +160,8 @@
         <div class="loader-brand">Flexa Lite</div>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="YOUR_SONG_URL_HERE" type="audio/mpeg">
+    <audio id="bgMusic" loop autoplay>
+        <source src="https://github.com/webscrape2003/media/blob/main/menu.mp3?raw=true" type="audio/mpeg">
     </audio>
 
     <div class="sidebar">
@@ -227,24 +227,29 @@
         </div>
     </div>
 
-
-<audio id="bgMusic" loop>
-    <source src="https://github.com/webscrape2003/media/blob/main/menu.mp3?raw=true" type="audio/mpeg">
-</audio>
-
-    
     <script>
-        // Start Logic & Music Initialization
+        const audio = document.getElementById('bgMusic');
+
+        // Logic to force music on first user click if autoplay fails
+        const startAudio = () => {
+            audio.play().then(() => {
+                // Remove listeners once audio is playing successfully
+                document.removeEventListener('click', startAudio);
+                document.removeEventListener('touchstart', startAudio);
+            }).catch(e => console.log("Autoplay blocked, waiting for interaction..."));
+        };
+
+        document.addEventListener('click', startAudio);
+        document.addEventListener('touchstart', startAudio);
+
         window.addEventListener('load', () => {
-            const audio = document.getElementById('bgMusic');
-            
             setTimeout(() => {
                 const loader = document.getElementById('preloader');
                 loader.style.opacity = '0';
                 setTimeout(() => { 
                     loader.style.visibility = 'hidden'; 
-                    // Attempt to play music (browsers often require interaction first)
-                    audio.play().catch(() => console.log("Music will play after user interaction."));
+                    // Initial attempt to play
+                    startAudio();
                 }, 800);
             }, 2500);
         });
@@ -254,8 +259,9 @@
             element.classList.add('active');
             document.getElementById('selectedUrl').value = url;
             document.getElementById('launchBtn').disabled = false;
-            // Play audio if it hasn't started yet
-            document.getElementById('bgMusic').play();
+            
+            // Interaction here ensures audio plays even if it was blocked before
+            audio.play();
         }
 
         function connect() {
