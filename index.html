@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flexa Lite | Premium Access</title>
+    <title>Flexa Lite | Enterprise Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
@@ -23,18 +23,16 @@
 
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 80%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* FLEXA LITE LOADING SCREEN */
+        /* FLEXA LITE SYSTEM LOADER */
         #loadingOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -44,258 +42,166 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.6s ease;
         }
 
-        .loader-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-        }
-
+        .loader-box { position: relative; width: 100px; height: 100px; }
         .flexa-ring {
-            position: absolute;
-            width: 100%; height: 100%;
-            border: 2px solid transparent;
+            position: absolute; width: 100%; height: 100%;
+            border: 3px solid rgba(34, 211, 238, 0.1);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
-
         .flexa-ring-inner {
-            position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 2px solid transparent;
-            border-bottom-color: #0ea5e9;
-            border-radius: 50%;
-            animation: spin 2s linear infinite reverse;
+            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 3px solid transparent; border-bottom-color: #0ea5e9;
+            border-radius: 50%; animation: spin 1.5s linear infinite reverse;
         }
 
-        .loading-brand {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .brand-text {
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: 4px;
-            color: var(--accent);
-            text-shadow: 0 0 20px var(--accent-glow);
-            display: block;
-        }
-
-        .status-msg {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 10px;
-        }
-
-        /* DASHBOARD CONTENT */
-        .container {
-            width: 90%;
-            max-width: 500px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-        }
-
-        .container.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h2 { font-size: 1.8rem; letter-spacing: -1px; }
-        .header p { color: var(--text-dim); font-size: 0.9rem; margin-top: 5px; }
-
-        /* SERVER CARDS */
-        .server-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .server-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 16px 20px;
-            border-radius: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .server-card:hover {
-            border-color: var(--accent);
-            background: rgba(34, 211, 238, 0.05);
-            transform: translateX(5px);
-        }
-
-        .server-card.active {
-            border-color: var(--accent);
-            background: rgba(34, 211, 238, 0.1);
-            box-shadow: 0 0 25px rgba(34, 211, 238, 0.1);
-        }
-
-        .server-card.active::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--accent);
-        }
-
-        .card-left { display: flex; align-items: center; gap: 15px; }
-        .icon-box {
-            width: 40px; height: 40px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .name-box span { display: block; }
-        .srv-title { font-weight: 700; font-size: 0.95rem; }
-        .srv-loc { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
-
-        .card-right { text-align: right; }
-        .srv-ping { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--success); font-weight: 600; }
-        .srv-status { font-size: 0.6rem; color: var(--text-dim); display: block; }
-
-        /* CONNECT BUTTON */
-        .btn-connect {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            background: var(--accent);
-            color: var(--bg);
-            font-weight: 800;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-connect:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
-        .btn-connect:not(:disabled):hover { opacity: 0.9; transform: scale(1.02); }
+        .brand-load { margin-top: 30px; text-align: center; }
+        .brand-text { font-weight: 800; font-size: 1.6rem; letter-spacing: 5px; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
+        .status-msg { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; display: block; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* MAIN DASHBOARD */
+        .container { width: 100%; max-width: 600px; opacity: 0; transform: translateY(30px); transition: 1s ease; }
+        .container.visible { opacity: 1; transform: translateY(0); }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2rem; font-weight: 800; }
+        .header span { color: var(--accent); }
+
+        /* SERVER GRID (6 SERVERS) */
+        .grid-title { font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; display: block; }
+        .server-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
+        
+        .srv-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 15px; border-radius: 16px; cursor: pointer; transition: 0.3s;
+        }
+        .srv-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .srv-card.active { border-color: var(--accent); background: rgba(34, 211, 238, 0.08); box-shadow: 0 0 20px rgba(34, 211, 238, 0.1); }
+        
+        .srv-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .srv-name { font-size: 0.85rem; font-weight: 800; color: #fff; }
+        .srv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .srv-meta { font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--text-dim); }
+
+        /* NEW OPTIONS SECTION */
+        .options-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+        .opt-item {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            padding: 15px 10px; border-radius: 14px; text-align: center; cursor: pointer; transition: 0.3s;
+        }
+        .opt-item:hover { border-color: var(--accent); background: rgba(34, 211, 238, 0.05); }
+        .opt-item i { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; display: block; }
+        .opt-item span { font-size: 0.65rem; font-weight: 700; color: var(--text-main); display: block; }
+
+        /* ACTION BUTTON */
+        .btn-action {
+            width: 100%; padding: 20px; border-radius: 18px; border: none;
+            background: var(--accent); color: var(--bg);
+            font-weight: 800; font-size: 1rem; text-transform: uppercase;
+            letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-action:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
+        .btn-action:not(:disabled):hover { letter-spacing: 4px; box-shadow: 0 10px 30px var(--accent-glow); }
     </style>
 </head>
 <body>
 
     <div id="loadingOverlay">
-        <div class="loader-container">
+        <div class="loader-box">
             <div class="flexa-ring"></div>
             <div class="flexa-ring-inner"></div>
         </div>
-        <div class="loading-brand">
+        <div class="brand-load">
             <span class="brand-text">FLEXA LITE</span>
-            <span class="status-msg" id="loadStatus">Initializing System...</span>
+            <span class="status-msg" id="statusMsg">Syncing with Core...</span>
         </div>
     </div>
 
-    <div class="container" id="mainDashboard">
+    <div class="container" id="dashboard">
         <div class="header">
-            <h2>Access Portal</h2>
-            <p>Select a node to establish secure connection</p>
+            <h1>FLEXA<span>LITE</span></h1>
         </div>
 
-        <div class="server-list">
-            <div class="server-card" onclick="selectSrv(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
-                <div class="card-left">
-                    <div class="icon-box"><i class="fas fa-bolt"></i></div>
-                    <div class="name-box">
-                        <span class="srv-title">Premium Node 01</span>
-                        <span class="srv-loc">United States</span>
-                    </div>
-                </div>
-                <div class="card-right">
-                    <span class="srv-ping">12ms</span>
-                    <span class="srv-status">STABLE</span>
-                </div>
+        <span class="grid-title">Infrastructure Clusters</span>
+        <div class="server-grid">
+            <div class="srv-card active" onclick="sel(this, 'https://mv-movie-cb473d451f3b.herokuapp.com/')">
+                <div class="srv-top"><span class="srv-name">PREMIUM 01</span><div class="srv-dot"></div></div>
+                <span class="srv-meta">US-EAST | 12ms</span>
             </div>
-
-            <div class="server-card" onclick="selectSrv(this, 'https://flexa-srv-2.herokuapp.com/')">
-                <div class="card-left">
-                    <div class="icon-box"><i class="fas fa-rocket"></i></div>
-                    <div class="name-box">
-                        <span class="srv-title">Hyper Speed 02</span>
-                        <span class="srv-loc">Singapore</span>
-                    </div>
-                </div>
-                <div class="card-right">
-                    <span class="srv-ping">45ms</span>
-                    <span class="srv-status">ACTIVE</span>
-                </div>
+            <div class="srv-card" onclick="sel(this, 'https://srv-02.com')">
+                <div class="srv-top"><span class="srv-name">FAST-NET 02</span><div class="srv-dot"></div></div>
+                <span class="srv-meta">EU-WEST | 28ms</span>
             </div>
-
-            <div class="server-card" onclick="selectSrv(this, 'https://flexa-srv-3.herokuapp.com/')">
-                <div class="card-left">
-                    <div class="icon-box"><i class="fas fa-shield-halved"></i></div>
-                    <div class="name-box">
-                        <span class="srv-title">Secure Node 03</span>
-                        <span class="srv-loc">Germany</span>
-                    </div>
-                </div>
-                <div class="card-right">
-                    <span class="srv-ping">22ms</span>
-                    <span class="srv-status">PROTECTED</span>
-                </div>
+            <div class="srv-card" onclick="sel(this, 'https://srv-03.com')">
+                <div class="srv-top"><span class="srv-name">STABLE 03</span><div class="srv-dot"></div></div>
+                <span class="srv-meta">ASIA-S | 45ms</span>
+            </div>
+            <div class="srv-card" onclick="sel(this, 'https://srv-04.com')">
+                <div class="srv-top"><span class="srv-name">SECURE 04</span><div class="srv-dot"></div></div>
+                <span class="srv-meta">UK-LON | 18ms</span>
+            </div>
+            <div class="srv-card" onclick="sel(this, 'https://srv-05.com')">
+                <div class="srv-top"><span class="srv-name">SILENT 05</span><div class="srv-dot"></div></div>
+                <span class="srv-meta">GLOBAL | 60ms</span>
+            </div>
+            <div class="srv-card" onclick="sel(this, 'https://srv-06.com')">
+                <div class="srv-top"><span class="srv-name">RESERVE 06</span><div class="srv-dot" style="background:#f59e0b"></div></div>
+                <span class="srv-meta">BACKUP | 110ms</span>
             </div>
         </div>
 
-        <input type="hidden" id="targetUrl" value="">
-        <button class="btn-connect" id="goBtn" disabled onclick="connectFinal()">Connect to Server</button>
+        <span class="grid-title">Additional Services</span>
+        <div class="options-row">
+            <div class="opt-item"><i class="fas fa-robot"></i><span>AUTO-BOT</span></div>
+            <div class="opt-item"><i class="fas fa-cloud-arrow-up"></i><span>DEPLOY</span></div>
+            <div class="opt-item"><i class="fas fa-plug"></i><span>PLUGINS</span></div>
+        </div>
+
+        <input type="hidden" id="finalUrl" value="https://mv-movie-cb473d451f3b.herokuapp.com/">
+        <button class="btn-action" id="connectBtn" onclick="launch()">Initialize Connection</button>
     </div>
 
     <script>
-        // 1. Initial Load Logic
-        window.addEventListener('load', () => {
+        // Entry Loading
+        window.onload = () => {
             const overlay = document.getElementById('loadingOverlay');
-            const dashboard = document.getElementById('mainDashboard');
-            
+            const dash = document.getElementById('dashboard');
             setTimeout(() => {
                 overlay.style.opacity = '0';
                 setTimeout(() => {
                     overlay.style.display = 'none';
-                    dashboard.classList.add('visible');
-                }, 800);
-            }, 2500); // Initial 2.5s load
-        });
+                    dash.classList.add('visible');
+                }, 600);
+            }, 2500);
+        };
 
-        // 2. Selection Logic
-        function selectSrv(el, url) {
-            document.querySelectorAll('.server-card').forEach(c => c.classList.remove('active'));
+        // Server Select
+        function sel(el, url) {
+            document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
-            document.getElementById('targetUrl').value = url;
-            document.getElementById('goBtn').disabled = false;
+            document.getElementById('finalUrl').value = url;
         }
 
-        // 3. Connect Logic (Shows Loader again)
-        function connectFinal() {
-            const url = document.getElementById('targetUrl').value;
+        // Connection Loading
+        function launch() {
+            const url = document.getElementById('finalUrl').value;
             const overlay = document.getElementById('loadingOverlay');
-            const statusText = document.getElementById('loadStatus');
+            const msg = document.getElementById('statusMsg');
 
-            statusText.innerText = "Establishing Secure Tunnel...";
+            msg.innerText = "Encrypting Handshake...";
             overlay.style.display = 'flex';
             overlay.style.opacity = '1';
 
             setTimeout(() => {
-                statusText.innerText = "Redirecting to Flexa Lite...";
+                msg.innerText = "Redirecting to Flexa Lite...";
                 setTimeout(() => {
-                    window.location.href = url; // Navigates to the chosen server
+                    window.location.href = url;
                 }, 1000);
             }, 2000);
         }
