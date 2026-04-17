@@ -61,7 +61,7 @@
 
         .nav-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
-        /* MUSIC CONTROLS */
+        /* MEDIA HUB (UPDATED) */
         .media-hub {
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
@@ -73,8 +73,8 @@
 
         .media-info { font-size: 0.65rem; color: var(--accent); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; text-align: center;}
         
-        .media-btns { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; }
-        .media-btns i { cursor: pointer; transition: 0.2s; color: var(--text-main); font-size: 1rem; }
+        .media-btns { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .media-btns i { cursor: pointer; transition: 0.2s; color: var(--text-main); font-size: 0.9rem; }
         .media-btns i:hover { color: var(--accent); transform: scale(1.2); }
 
         .vol-slider {
@@ -133,7 +133,7 @@
             body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 1px solid var(--border); }
             .main-content { padding: 20px; padding-bottom: 120px; }
-            .media-hub { display: none; } /* Hidden on mobile to save space */
+            .media-hub { display: block; margin-top: 20px; }
         }
     </style>
 </head>
@@ -144,8 +144,8 @@
         <div class="loader-brand">Flexa Lite</div>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="https://github.com/webscrape2003/media/blob/main/menu.mp3?raw=true" type="audio/mpeg">
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/webscrape2003/media/main/menu.mp3" type="audio/mpeg">
     </audio>
 
     <div class="sidebar">
@@ -156,13 +156,14 @@
         </p>
 
         <div class="media-hub">
-            <div class="media-info"><i class="fas fa-music"></i> Audio Engine</div>
+            <div class="media-info"><i class="fas fa-music"></i> Media Control</div>
             <div class="media-btns">
-                <i class="fas fa-play" onclick="controlMusic('play')"></i>
-                <i class="fas fa-stop" onclick="controlMusic('stop')"></i>
+                <i class="fas fa-minus" title="Volume Down" onclick="controlMusic('volDown')"></i>
+                <i class="fas fa-play" title="Play" onclick="controlMusic('play')"></i>
+                <i class="fas fa-stop" title="Stop" onclick="controlMusic('stop')"></i>
+                <i class="fas fa-plus" title="Volume Up" onclick="controlMusic('volUp')"></i>
             </div>
-            <div class="nav-label" style="margin-bottom: 5px; font-size: 0.5rem; text-align: center;">Master Volume</div>
-            <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="controlMusic('vol', this.value)">
+            <input type="range" id="volRange" class="vol-slider" min="0" max="1" step="0.05" value="0.5" oninput="controlMusic('vol', this.value)">
         </div>
     </div>
 
@@ -221,6 +222,7 @@
 
     <script>
         const audio = document.getElementById('bgMusic');
+        const volSlider = document.getElementById('volRange');
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -231,9 +233,24 @@
         });
 
         function controlMusic(action, value) {
-            if(action === 'play') audio.play();
-            if(action === 'stop') { audio.pause(); audio.currentTime = 0; }
-            if(action === 'vol') audio.volume = value;
+            if(action === 'play') {
+                audio.play().catch(e => console.log("User interaction required."));
+            }
+            if(action === 'stop') { 
+                audio.pause(); 
+                audio.currentTime = 0; 
+            }
+            if(action === 'vol') {
+                audio.volume = value;
+            }
+            if(action === 'volUp') {
+                audio.volume = Math.min(1, audio.volume + 0.1);
+                volSlider.value = audio.volume;
+            }
+            if(action === 'volDown') {
+                audio.volume = Math.max(0, audio.volume - 0.1);
+                volSlider.value = audio.volume;
+            }
         }
 
         function select(element, url) {
@@ -241,8 +258,8 @@
             element.classList.add('active');
             document.getElementById('selectedUrl').value = url;
             document.getElementById('launchBtn').disabled = false;
-            // Auto play on selection
-            audio.play();
+            // Play music on first click
+            audio.play().catch(e => console.log("Audio ready."));
         }
 
         function connect() {
