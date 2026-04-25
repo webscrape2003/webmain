@@ -39,6 +39,10 @@
 
 
 
+/* Add this to your existing CSS */
+.hidden-view {
+    display: none !important;
+}
 
 /* Ensure the bot container is hidden by default */
 #bot-view-container {
@@ -1297,7 +1301,7 @@
 
 
 
-<section class="owner-section">
+<section class="owner-section hidden-view">
     <div class="owner-card">
         <img src="https://i.ibb.co/spHdCHBw/FB-IMG-1772168491034.jpg" alt="Vajira" class="profile-img">
         
@@ -1646,24 +1650,30 @@ function switchView(view) {
     const btnOwner = document.getElementById('btn-owner');
 
     if (view === 'owner') {
-        // Show Owner, Hide Bot
+        // Show Owner
+        ownerSection.classList.remove('hidden-view');
         ownerSection.classList.add('active');
+        
+        // Hide Bot
         botContainer.classList.add('hidden-view');
         botContainer.classList.remove('active');
         
-        // Update Buttons
+        // Update Button Highlights
         btnOwner.classList.add('active');
         btnBot.classList.remove('active');
     } else if (view === 'bot') {
-        // Show Bot, Hide Owner
+        // Show Bot
         botContainer.classList.remove('hidden-view');
         botContainer.classList.add('active');
+        
+        // Hide Owner
+        ownerSection.classList.add('hidden-view');
         ownerSection.classList.remove('active');
         
-        // Show the first category (Main) by default when clicking Bot Features
+        // Default to showing the 'Main' category
         showModule('main-m'); 
         
-        // Update Buttons
+        // Update Button Highlights
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
     }
