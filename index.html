@@ -38,22 +38,25 @@
 
 
 
-/* ===== FULL VIDEO VIEW (NO CROP) ===== */
+/* ===== ANDROID + PC FULL VIDEO FIX ===== */
 
 html, body {
     margin: 0;
-    background: black; /* fallback */
+    padding: 0;
+    height: 100%;
+    background: black;
 }
 
 /* Container */
 .video-bg-container {
     position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    left: 0;
+    width: 100vw;   /* FIX */
+    height: 100vh;  /* FIX */
     overflow: hidden;
     z-index: -1;
-    background: black; /* fills sides */
+    background: black;
 }
 
 /* Video */
@@ -61,20 +64,22 @@ html, body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 100%;
+    
+    /* IMPORTANT */
+    width: 100vw;
+    height: 100vh;
+
     transform: translate(-50%, -50%);
-    object-fit: contain; /* 👈 SHOW FULL VIDEO */
+    object-fit: contain; /* full video */
 }
 
-/* Optional dark overlay */
+/* Overlay (optional) */
 .video-bg-container::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0,0,0,0.4);
 }
-
 
         
 
