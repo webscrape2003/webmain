@@ -1076,23 +1076,25 @@
 </div>
 
 <div id="bot-view-container">
-    <div class="container">
+    <div class="container"> 
         </div>
     
-    <div class="command-nav">
-         <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
-    <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
-    <button class="nav-btn" onclick="showModule('ai-m')">AI</button>
-    <button class="nav-btn" onclick="showModule('movie-m')">Movies</button>
-    <button class="nav-btn" onclick="showModule('game-m')">PC Games</button>
-    <button class="nav-btn" onclick="showModule('search-m')">Search</button>
-    <button class="nav-btn" onclick="showModule('logo-m')">Logos</button>
-    <button class="nav-btn" onclick="showModule('group-m')">Group</button>
-    <button class="nav-btn" onclick="showModule('owner-m')">Owner</button>
-    <button class="nav-btn" onclick="showModule('other-m')">Other</button>
-    <button class="nav-btn" onclick="showModule('sys-m')">System</button>
+    <div class="command-nav" id="bot-cmd-nav">
+        <button class="nav-btn active" onclick="showModule('main-m', event)">Main</button>
+        <button class="nav-btn" onclick="showModule('dl-m', event)">Downloads</button>
+        <button class="nav-btn" onclick="showModule('ai-m', event)">AI</button>
+        <button class="nav-btn" onclick="showModule('movie-m')">Movies</button>
+        <button class="nav-btn" onclick="showModule('game-m')">PC Games</button>
+        <button class="nav-btn" onclick="showModule('search-m')">Search</button>
+        <button class="nav-btn" onclick="showModule('logo-m')">Logos</button>
+        <button class="nav-btn" onclick="showModule('group-m')">Group</button>
+        <button class="nav-btn" onclick="showModule('owner-m')">Owner</button>
+        <button class="nav-btn" onclick="showModule('other-m')">Other</button>
+        <button class="nav-btn" onclick="showModule('sys-m')">System</button>
         </div>
 </div>
+
+    
 
     
 
@@ -1613,51 +1615,18 @@
 
 
         
- function toggleMainView(view) {
-    const container = document.querySelector('.container'); // Pairing/QR UI
-    const botNav = document.getElementById('bot-cmd-nav');
-    const ownerSection = document.querySelector('.owner-section');
-    const cmdModules = document.querySelectorAll('.cmd-module');
-    
-    // Toggle Buttons
-    document.getElementById('view-bot-btn').classList.toggle('active', view === 'bot');
-    document.getElementById('view-owner-btn').classList.toggle('active', view === 'owner');
-
-    if (view === 'owner') {
-        // Hide Bot UI
-        container.classList.add('hidden');
-        botNav.classList.add('hidden');
-        cmdModules.forEach(m => m.classList.remove('active'));
-        
-        // Show Owner UI
-        ownerSection.classList.add('active');
-    } else {
-        // Show Bot UI
-        container.classList.remove('hidden');
-        botNav.classList.remove('hidden');
-        ownerSection.classList.remove('active');
-        
-        // Default back to Main module
-        showModule('main-m');
-    }
-}
-
-
-
 function switchView(view) {
     const botContainer = document.getElementById('bot-view-container');
     const ownerSection = document.querySelector('.owner-section');
     const btnBot = document.getElementById('btn-bot');
     const btnOwner = document.getElementById('btn-owner');
-    const allModules = document.querySelectorAll('.cmd-module');
 
     if (view === 'owner') {
         // Switch to Owner View
         botContainer.classList.add('hidden-view');
-        allModules.forEach(m => m.classList.remove('active')); // Hide active cmd modules
         ownerSection.classList.add('active');
         
-        // Update Button States
+        // UI Highlights
         btnOwner.classList.add('active');
         btnBot.classList.remove('active');
     } else {
@@ -1665,28 +1634,36 @@ function switchView(view) {
         botContainer.classList.remove('hidden-view');
         ownerSection.classList.remove('active');
         
-        // Show default command module
-        document.getElementById('main-m').classList.add('active');
-        
-        // Update Button States
+        // UI Highlights
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
     }
 }
+
+function showModule(moduleId, event) {
+    // 1. Hide all modules
+    document.querySelectorAll('.cmd-module').forEach(m => {
+        m.classList.remove('active');
+    });
+    
+    // 2. Remove active class from all category buttons
+    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+    
+    // 3. Show the selected module and highlight its button
+    const targetModule = document.getElementById(moduleId);
+    if (targetModule) {
+        targetModule.classList.add('active');
+    }
+    
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+}
         
 
-// Updated showModule to handle button states correctly
-function showModule(moduleId) {
-    // Ensure we are in bot view
-    toggleMainView('bot');
-    
-    document.querySelectorAll('.cmd-module').forEach(m => m.classList.remove('active'));
-    // Select only buttons inside the bot-cmd-nav
-    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => b.classList.remove('active'));
-    
-    document.getElementById(moduleId).classList.add('active');
-    if(event && event.currentTarget) event.currentTarget.classList.add('active');
-}
+
 
 
 
