@@ -43,21 +43,21 @@
 /* Hide owner section by default */
 .owner-section {
     display: none; 
-    width: 90%;
-    max-width: 400px;
-    margin: 40px auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-/* Show when active */
+/* Show when active class is added */
 .owner-section.active {
-    display: block;
+    display: flex;
+    animation: moduleAppear 0.5s ease-out;
 }
 
-/* Hide container (commands/input) when owner is shown */
-.container.hidden, .command-nav.hidden {
-    display: none;
+/* Hide the pairing container and cmd-nav when owner view is active */
+.hidden-view {
+    display: none !important;
 }
-
 
 
 
@@ -1070,26 +1070,17 @@
 
 
 
-<div class="command-nav" style="margin-bottom: 10px;">
-    <button class="nav-btn active" id="view-bot-btn" onclick="toggleMainView('bot')">
-        <i class="fas fa-robot"></i> BOT FEATURES
-    </button>
-    <button class="nav-btn" id="view-owner-btn" onclick="toggleMainView('owner')">
-        <i class="fas fa-user-tie"></i> OWNER DETAILS
-    </button>
+<div class="command-nav">
+    <button class="nav-btn active" id="btn-bot" onclick="switchView('bot')">Bot Features</button>
+    <button class="nav-btn" id="btn-owner" onclick="switchView('owner')">Owner Details</button>
 </div>
 
-<hr style="border: 0; border-top: 1px solid var(--border); width: 80%; margin: 10px auto;">
-
-<div class="command-nav" id="bot-cmd-nav">
-    <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
-    <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
-    </div>
-
+<div id="bot-view-container">
+    <div class="container">
+        </div>
     
-
-<div class="command-nav">
-    <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
+    <div class="command-nav">
+         <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
     <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
     <button class="nav-btn" onclick="showModule('ai-m')">AI</button>
     <button class="nav-btn" onclick="showModule('movie-m')">Movies</button>
@@ -1100,7 +1091,10 @@
     <button class="nav-btn" onclick="showModule('owner-m')">Owner</button>
     <button class="nav-btn" onclick="showModule('other-m')">Other</button>
     <button class="nav-btn" onclick="showModule('sys-m')">System</button>
+        </div>
 </div>
+
+    
 
 <div id="main-m" class="cmd-module active">
     <div class="cmd-card">
@@ -1647,6 +1641,39 @@
         showModule('main-m');
     }
 }
+
+
+
+function switchView(view) {
+    const botContainer = document.getElementById('bot-view-container');
+    const ownerSection = document.querySelector('.owner-section');
+    const btnBot = document.getElementById('btn-bot');
+    const btnOwner = document.getElementById('btn-owner');
+    const allModules = document.querySelectorAll('.cmd-module');
+
+    if (view === 'owner') {
+        // Switch to Owner View
+        botContainer.classList.add('hidden-view');
+        allModules.forEach(m => m.classList.remove('active')); // Hide active cmd modules
+        ownerSection.classList.add('active');
+        
+        // Update Button States
+        btnOwner.classList.add('active');
+        btnBot.classList.remove('active');
+    } else {
+        // Switch to Bot View
+        botContainer.classList.remove('hidden-view');
+        ownerSection.classList.remove('active');
+        
+        // Show default command module
+        document.getElementById('main-m').classList.add('active');
+        
+        // Update Button States
+        btnBot.classList.add('active');
+        btnOwner.classList.remove('active');
+    }
+}
+        
 
 // Updated showModule to handle button states correctly
 function showModule(moduleId) {
