@@ -40,20 +40,25 @@
 
 
 
-/* Add this to your <style> section */
-.hidden-start {
+/* Hide owner section by default */
+.owner-section {
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Show when active class is added */
+.owner-section.active {
+    display: flex;
+    animation: moduleAppear 0.5s ease-out;
+}
+
+/* Hide the pairing container and cmd-nav when owner view is active */
+.hidden-view {
     display: none !important;
 }
 
-/* Ensure the owner section and command modules are hidden by default */
-.owner-section, .cmd-module, .cmd-center, .container {
-    display: none;
-}
-
-/* Maintain active states */
-.owner-section.active, .cmd-module.active, .container.active, .cmd-center.active {
-    display: flex; /* or block depending on element type */
-}
 
 
         
@@ -1065,16 +1070,6 @@
 
 
 
-
-
-
-
-
-
-
-
-    
-
 <div class="command-nav">
     <button class="nav-btn active" id="btn-bot" onclick="switchView('bot')">Bot Features</button>
     <button class="nav-btn" id="btn-owner" onclick="switchView('owner')">Owner Details</button>
@@ -1085,7 +1080,7 @@
         </div>
     
     <div class="command-nav" id="bot-cmd-nav">
-          <button class="nav-btn active" onclick="showModule('main-m', event)">Main</button>
+        <button class="nav-btn active" onclick="showModule('main-m', event)">Main</button>
         <button class="nav-btn" onclick="showModule('dl-m', event)">Downloads</button>
         <button class="nav-btn" onclick="showModule('ai-m', event)">AI</button>
         <button class="nav-btn" onclick="showModule('movie-m')">Movies</button>
@@ -1098,8 +1093,8 @@
         <button class="nav-btn" onclick="showModule('sys-m')">System</button>
         </div>
 </div>
+
     
-   
 
     
 
@@ -1642,28 +1637,6 @@ function switchView(view) {
         // UI Highlights
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
-    }
-}
-
-function showModule(moduleId, event) {
-    // 1. Hide all modules
-    document.querySelectorAll('.cmd-module').forEach(m => {
-        m.classList.remove('active');
-    });
-    
-    // 2. Remove active class from all category buttons
-    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    
-    // 3. Show the selected module and highlight its button
-    const targetModule = document.getElementById(moduleId);
-    if (targetModule) {
-        targetModule.classList.add('active');
-    }
-    
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
     }
 }
 
