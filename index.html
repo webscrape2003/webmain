@@ -40,32 +40,33 @@
 
 
 
-
-/* Ensure the bot container is hidden by default */
-#bot-view-container {
+/* 1. Hide the containers by default */
+#bot-view-container, 
+.owner-section {
     display: none;
 }
 
-/* This allows it to show when active */
-#bot-view-container.active {
+/* 2. Show them ONLY when they have the 'active' class */
+#bot-view-container.active,
+.owner-section.active {
     display: block;
 }
 
-/* Remove 'display: block' from the default active module so it starts hidden */
-.cmd-module.active {
-    display: none; 
+/* 3. Hide all command modules by default */
+.cmd-module {
+    display: none;
 }
 
-
-/* Ensure modules only show when the bot container is active */
+/* 4. Show a module ONLY if it is active AND the parent bot container is active */
 #bot-view-container.active .cmd-module.active {
-    display: block;
+    display: block !important;
 }
 
-/* Force hide everything with this class */
+/* 5. Force hide class */
 .hidden-view {
     display: none !important;
 }
+
 
 
 
@@ -1652,34 +1653,35 @@ function switchView(view) {
     const btnOwner = document.getElementById('btn-owner');
 
     if (view === 'owner') {
-        // HIDE BOT: Remove 'active' and add 'hidden-view'
-        botContainer.classList.remove('active');
-        botContainer.classList.add('hidden-view');
-        
-        // SHOW OWNER: Add 'active' and remove 'hidden-view'
+        // Show Owner
         ownerSection.classList.add('active');
         ownerSection.classList.remove('hidden-view');
         
-        // Button Highlight
+        // Hide Bot & Deactivate it
+        botContainer.classList.remove('active');
+        botContainer.classList.add('hidden-view');
+        
+        // Buttons
         btnOwner.classList.add('active');
         btnBot.classList.remove('active');
     } else if (view === 'bot') {
-        // SHOW BOT: Add 'active' and remove 'hidden-view'
+        // Show Bot & Activate it
         botContainer.classList.add('active');
         botContainer.classList.remove('hidden-view');
         
-        // HIDE OWNER: Remove 'active' and add 'hidden-view'
+        // Hide Owner
         ownerSection.classList.remove('active');
         ownerSection.classList.add('hidden-view');
         
-        // Default to showing the first bot module
+        // Open default bot category
         showModule('main-m'); 
         
-        // Button Highlight
+        // Buttons
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
     }
 }
+
 
 
 
