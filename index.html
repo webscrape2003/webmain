@@ -42,41 +42,39 @@
 
 
 
-/* ===== PERFECT FULL SCREEN VIDEO (ALL DEVICES) ===== */
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: black;
-}
-
-/* Container */
 .video-bg-container {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: calc(var(--vh, 1vh) * 100); /* FIX MOBILE */
+    width: 100vw;   /* Full viewport width */
+    height: 100vh;  /* Full viewport height */
     overflow: hidden;
     z-index: -1;
-    background: black;
+    background-color: #000; /* Fallback for slow connections */
 }
 
-/* Video */
+/* FULL VIDEO COVERAGE */
 .video-bg {
     position: absolute;
     top: 50%;
     left: 50%;
-
-    /* KEY FIX */
-    min-width: 100%;
+    min-width: 100%; 
     min-height: 100%;
-
     width: auto;
     height: auto;
-
+    /* Centers the video while covering the area */
     transform: translate(-50%, -50%);
+    
+    object-fit: cover; /* Fills screen by cropping edges instead of showing bars */
+}
+
+/* Dark overlay for readability */
+.video-bg-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.7); /* Slightly darker for better text contrast */
+    pointer-events: none;
 }
 
 
