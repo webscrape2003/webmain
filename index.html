@@ -40,24 +40,26 @@
 
 
 
-/* Hide owner section by default */
-.owner-section {
+/* Ensure the bot container is hidden by default */
+#bot-view-container {
+    display: none;
+}
+
+/* This allows it to show when active */
+#bot-view-container.active {
+    display: block;
+}
+
+/* Remove 'display: block' from the default active module so it starts hidden */
+.cmd-module.active {
     display: none; 
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
 }
 
-/* Show when active class is added */
-.owner-section.active {
-    display: flex;
-    animation: moduleAppear 0.5s ease-out;
+/* Only show a module when the container AND the module are active */
+#bot-view-container.active .cmd-module.active {
+    display: block;
 }
 
-/* Hide the pairing container and cmd-nav when owner view is active */
-.hidden-view {
-    display: none !important;
-}
 
 
 
@@ -1075,7 +1077,7 @@
     <button class="nav-btn" id="btn-owner" onclick="switchView('owner')">Owner Details</button>
 </div>
 
-<div id="bot-view-container">
+<div id="bot-view-container" class="hidden-view">
     <div class="container"> 
         </div>
     
@@ -1098,7 +1100,7 @@
 
     
 
-<div id="main-m" class="cmd-module active">
+<div id="main-m" class="cmd-module">
     <div class="cmd-card">
         <div class="cmd-header"><i class="fas fa-bolt"></i><h3>MAIN CMD</h3></div>
         <ul class="cmd-list">
@@ -1611,35 +1613,6 @@
 
 
 
-
-
-
-        
-function switchView(view) {
-    const botContainer = document.getElementById('bot-view-container');
-    const ownerSection = document.querySelector('.owner-section');
-    const btnBot = document.getElementById('btn-bot');
-    const btnOwner = document.getElementById('btn-owner');
-
-    if (view === 'owner') {
-        // Switch to Owner View
-        botContainer.classList.add('hidden-view');
-        ownerSection.classList.add('active');
-        
-        // UI Highlights
-        btnOwner.classList.add('active');
-        btnBot.classList.remove('active');
-    } else {
-        // Switch to Bot View
-        botContainer.classList.remove('hidden-view');
-        ownerSection.classList.remove('active');
-        
-        // UI Highlights
-        btnBot.classList.add('active');
-        btnOwner.classList.remove('active');
-    }
-}
-
 function showModule(moduleId, event) {
     // 1. Hide all modules
     document.querySelectorAll('.cmd-module').forEach(m => {
@@ -1662,6 +1635,41 @@ function showModule(moduleId, event) {
     }
 }
         
+
+
+
+        
+function switchView(view) {
+    const botContainer = document.getElementById('bot-view-container');
+    const ownerSection = document.querySelector('.owner-section');
+    const btnBot = document.getElementById('btn-bot');
+    const btnOwner = document.getElementById('btn-owner');
+
+    if (view === 'owner') {
+        // Show Owner, Hide Bot
+        ownerSection.classList.add('active');
+        botContainer.classList.add('hidden-view');
+        botContainer.classList.remove('active');
+        
+        // Update Buttons
+        btnOwner.classList.add('active');
+        btnBot.classList.remove('active');
+    } else if (view === 'bot') {
+        // Show Bot, Hide Owner
+        botContainer.classList.remove('hidden-view');
+        botContainer.classList.add('active');
+        ownerSection.classList.remove('active');
+        
+        // Show the first category (Main) by default when clicking Bot Features
+        showModule('main-m'); 
+        
+        // Update Buttons
+        btnBot.classList.add('active');
+        btnOwner.classList.remove('active');
+    }
+}
+
+
 
 
 
