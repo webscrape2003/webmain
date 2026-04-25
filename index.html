@@ -40,11 +40,7 @@
 
 
 
-/* ===== VIDEO BACKGROUND FIX ===== */
 
-html, body {
-    height: 100%;
-}
 
 /* Container */
 .video-bg-container {
@@ -759,6 +755,7 @@ html, body {
 <div class="video-bg-container">
     <video autoplay muted loop playsinline class="video-bg">
         <source src="https://cdn.pixabay.com/video/2025/08/06/295578_large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
     </video>
 </div>
 
@@ -1480,13 +1477,6 @@ html, body {
 
 
 
-function setVH() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', vh + 'px');
-}
-
-setVH();
-window.addEventListener('resize', setVH);
 
 
 
