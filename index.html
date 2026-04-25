@@ -1626,12 +1626,12 @@ function switchView(view) {
     const btnOwner = document.getElementById('btn-owner');
 
     if (view === 'bot') {
-        botView.style.display = 'block';
+        botView.style.display = 'active';
         ownerView.style.display = 'none';
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
     } else {
-        botView.style.display = 'none';
+        botView.style.display = 'active';
         ownerView.style.display = 'block';
         btnBot.classList.remove('active');
         btnOwner.classList.add('active');
