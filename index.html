@@ -43,43 +43,35 @@
 
 
 .video-bg-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* Use 100vw/100vh to force full screen on Android even when scrolling */
-    width: 100vw;   
-    height: 100vh;  
-    overflow: hidden;
-    z-index: -1;
-    background-color: black;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
 }
 
+/* FULL VIDEO FIT (NO CROPPING) */
+
 .video-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    /* Centers the video properly */
-    transform: translate(-50%, -50%);
-    
-    /* CHANGE: 'cover' ensures the video fills the screen on tall Android phones */
-    object-fit: cover; 
-    
-    /* Fallback for older Android browsers */
-    min-width: 100%;
-    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;   /* 👈 KEY FIX */
+    background: black;     /* fills empty sides */
 }
 
 /* Dark overlay */
+
 .video-bg-container::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(2, 6, 23, 0.6);
-    pointer-events: none;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.6);
+    pointer-events: none;
 }
-        
 
         
 
