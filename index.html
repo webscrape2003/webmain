@@ -41,45 +41,6 @@
 
 
 
-.video-bg-container {
-    position: fixed; /* This keeps the video stuck to the screen while you scroll */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh; /* Better for mobile browsers */
-    overflow: hidden;
-    z-index: -1; /* Keeps video behind your content */
-    background: #020617; /* Matches your --bg color for seamless loading */
-}
-
-.video-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%);
-    object-fit: cover; /* Forces video to fill 100% of the screen area */
-}
-
-/* Maintain the dark overlay for text readability */
-.video-bg-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(2, 6, 23, 0.6);
-    pointer-events: none;
-}
-
-        
-
-
         /* --- OWNER PROFILE STYLES --- */
         .owner-section {
             width: 90%;
