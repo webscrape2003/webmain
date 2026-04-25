@@ -1650,30 +1650,30 @@ function switchView(view) {
     const btnOwner = document.getElementById('btn-owner');
 
     if (view === 'owner') {
-        // Show Owner
-        ownerSection.classList.remove('hidden-view');
-        ownerSection.classList.add('active');
-        
-        // Hide Bot
+        // 1. Hide Bot Container
         botContainer.classList.add('hidden-view');
         botContainer.classList.remove('active');
         
-        // Update Button Highlights
+        // 2. Show Owner Section
+        ownerSection.classList.remove('hidden-view');
+        ownerSection.classList.add('active');
+        
+        // 3. Update Buttons
         btnOwner.classList.add('active');
         btnBot.classList.remove('active');
     } else if (view === 'bot') {
-        // Show Bot
-        botContainer.classList.remove('hidden-view');
-        botContainer.classList.add('active');
-        
-        // Hide Owner
+        // 1. Hide Owner Section
         ownerSection.classList.add('hidden-view');
         ownerSection.classList.remove('active');
         
-        // Default to showing the 'Main' category
+        // 2. Show Bot Container
+        botContainer.classList.remove('hidden-view');
+        botContainer.classList.add('active');
+        
+        // 3. Show 'Main' commands by default
         showModule('main-m'); 
         
-        // Update Button Highlights
+        // 4. Update Buttons
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
     }
