@@ -1620,61 +1620,33 @@
 
         
 function switchView(view) {
-    const botContainer = document.getElementById('bot-view-container');
-    const ownerSection = document.querySelector('.owner-section');
-    const terminal = document.querySelector('.cmd-center');
-    const pairContainer = document.querySelector('.container');
+    const botView = document.getElementById('bot-view-container');
+    const ownerView = document.getElementById('owner-view-container');
     const btnBot = document.getElementById('btn-bot');
     const btnOwner = document.getElementById('btn-owner');
 
-    if (view === 'owner') {
-        // Show Owner, Hide Bot
-        ownerSection.style.display = 'flex';
-        botContainer.style.display = 'none';
-        if(terminal) terminal.style.display = 'none';
-        if(pairContainer) pairContainer.style.display = 'none';
-        
-        btnOwner.classList.add('active');
-        btnBot.classList.remove('active');
-    } else {
-        // Show Bot, Hide Owner
-        botContainer.style.display = 'block';
-        ownerSection.style.display = 'none';
-        
-        // Show the specific bot elements
-        if(terminal) terminal.style.display = 'block';
-        if(pairContainer) pairContainer.style.display = 'block';
-        document.getElementById('bot-cmd-nav').style.display = 'flex';
-        
+    if (view === 'bot') {
+        botView.style.display = 'block';
+        ownerView.style.display = 'none';
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
-        
-        // Trigger database refresh if bot view is opened
-        if (window.refreshDatabase) window.refreshDatabase();
+    } else {
+        botView.style.display = 'none';
+        ownerView.style.display = 'block';
+        btnBot.classList.remove('active');
+        btnOwner.classList.add('active');
     }
 }
 
-        
-function showModule(moduleId, event) {
-    // 1. Hide all modules
-    document.querySelectorAll('.cmd-module').forEach(m => {
-        m.classList.remove('active');
-    });
+function showModule(id, event) {
+    // Hide all modules
+    document.querySelectorAll('.cmd-module').forEach(m => m.classList.remove('active'));
+    // Show selected
+    document.getElementById(id).classList.add('active');
     
-    // 2. Remove active class from all category buttons
-    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    
-    // 3. Show the selected module and highlight its button
-    const targetModule = document.getElementById(moduleId);
-    if (targetModule) {
-        targetModule.classList.add('active');
-    }
-    
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
+    // Update button styling
+    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => b.classList.remove('active'));
+    if(event) event.currentTarget.classList.add('active');
 }
         
 
