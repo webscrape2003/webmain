@@ -41,6 +41,29 @@
 
 
 
+/* Hide owner section by default */
+.owner-section {
+    display: none; 
+    width: 90%;
+    max-width: 400px;
+    margin: 40px auto;
+}
+
+/* Show when active */
+.owner-section.active {
+    display: block;
+}
+
+/* Hide container (commands/input) when owner is shown */
+.container.hidden, .command-nav.hidden {
+    display: none;
+}
+
+
+
+
+        
+
         /* --- OWNER PROFILE STYLES --- */
         .owner-section {
             width: 90%;
@@ -1057,6 +1080,25 @@
 
 
 
+
+<div class="command-nav" style="margin-bottom: 10px;">
+    <button class="nav-btn active" id="view-bot-btn" onclick="toggleMainView('bot')">
+        <i class="fas fa-robot"></i> BOT FEATURES
+    </button>
+    <button class="nav-btn" id="view-owner-btn" onclick="toggleMainView('owner')">
+        <i class="fas fa-user-tie"></i> OWNER DETAILS
+    </button>
+</div>
+
+<hr style="border: 0; border-top: 1px solid var(--border); width: 80%; margin: 10px auto;">
+
+<div class="command-nav" id="bot-cmd-nav">
+    <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
+    <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
+    </div>
+
+    
+
 <div class="command-nav">
     <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
     <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
@@ -1581,13 +1623,54 @@
     setInterval(fetchDB, 30000); 
 })();
 
-                    
-        function showModule(moduleId) {
-            document.querySelectorAll('.cmd-module').forEach(m => m.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(moduleId).classList.add('active');
-            if(event) event.currentTarget.classList.add('active');
-        }
+
+
+
+
+
+
+        
+ function toggleMainView(view) {
+    const container = document.querySelector('.container'); // Pairing/QR UI
+    const botNav = document.getElementById('bot-cmd-nav');
+    const ownerSection = document.querySelector('.owner-section');
+    const cmdModules = document.querySelectorAll('.cmd-module');
+    
+    // Toggle Buttons
+    document.getElementById('view-bot-btn').classList.toggle('active', view === 'bot');
+    document.getElementById('view-owner-btn').classList.toggle('active', view === 'owner');
+
+    if (view === 'owner') {
+        // Hide Bot UI
+        container.classList.add('hidden');
+        botNav.classList.add('hidden');
+        cmdModules.forEach(m => m.classList.remove('active'));
+        
+        // Show Owner UI
+        ownerSection.classList.add('active');
+    } else {
+        // Show Bot UI
+        container.classList.remove('hidden');
+        botNav.classList.remove('hidden');
+        ownerSection.classList.remove('active');
+        
+        // Default back to Main module
+        showModule('main-m');
+    }
+}
+
+// Updated showModule to handle button states correctly
+function showModule(moduleId) {
+    // Ensure we are in bot view
+    toggleMainView('bot');
+    
+    document.querySelectorAll('.cmd-module').forEach(m => m.classList.remove('active'));
+    // Select only buttons inside the bot-cmd-nav
+    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById(moduleId).classList.add('active');
+    if(event && event.currentTarget) event.currentTarget.classList.add('active');
+}
 
 
 
