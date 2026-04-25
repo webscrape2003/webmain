@@ -40,25 +40,20 @@
 
 
 
-/* Hide owner section by default */
-.owner-section {
-    display: none; 
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Show when active class is added */
-.owner-section.active {
-    display: flex;
-    animation: moduleAppear 0.5s ease-out;
-}
-
-/* Hide the pairing container and cmd-nav when owner view is active */
-.hidden-view {
+/* Add this to your <style> section */
+.hidden-start {
     display: none !important;
 }
 
+/* Ensure the owner section and command modules are hidden by default */
+.owner-section, .cmd-module, .cmd-center, .container {
+    display: none;
+}
+
+/* Maintain active states */
+.owner-section.active, .cmd-module.active, .container.active, .cmd-center.active {
+    display: flex; /* or block depending on element type */
+}
 
 
         
@@ -1070,6 +1065,17 @@
 
 
 
+
+    <div class="cmd-center hidden-start" id="main-cmd-center">
+    </div>
+
+<div class="container hidden-start" id="main-pairing-container">
+    </div>
+
+<div class="owner-section" id="main-owner-section">
+    </div>
+
+
 <div class="command-nav">
     <button class="nav-btn active" id="btn-bot" onclick="switchView('bot')">Bot Features</button>
     <button class="nav-btn" id="btn-owner" onclick="switchView('owner')">Owner Details</button>
@@ -1616,27 +1622,33 @@
 
         
 function switchView(view) {
-    const botContainer = document.getElementById('bot-view-container');
-    const ownerSection = document.querySelector('.owner-section');
+    const botView = document.getElementById('main-cmd-center');
+    const pairContainer = document.getElementById('main-pairing-container');
+    const ownerSection = document.getElementById('main-owner-section');
     const btnBot = document.getElementById('btn-bot');
     const btnOwner = document.getElementById('btn-owner');
 
-    if (view === 'owner') {
-        // Switch to Owner View
-        botContainer.classList.add('hidden-view');
-        ownerSection.classList.add('active');
+    // Remove initial hidden class from all
+    [botView, pairContainer, ownerSection].forEach(el => {
+        if(el) el.classList.remove('hidden-start');
+    });
+
+    if (view === 'bot') {
+        // Show Bot Details
+        botView.style.display = 'block';
+        pairContainer.style.display = 'block';
+        ownerSection.style.display = 'none';
         
-        // UI Highlights
-        btnOwner.classList.add('active');
-        btnBot.classList.remove('active');
-    } else {
-        // Switch to Bot View
-        botContainer.classList.remove('hidden-view');
-        ownerSection.classList.remove('active');
-        
-        // UI Highlights
         btnBot.classList.add('active');
         btnOwner.classList.remove('active');
+    } else if (view === 'owner') {
+        // Show Owner Details
+        botView.style.display = 'none';
+        pairContainer.style.display = 'none';
+        ownerSection.style.display = 'flex';
+        
+        btnOwner.classList.add('active');
+        btnBot.classList.remove('active');
     }
 }
 
