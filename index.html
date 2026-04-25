@@ -1613,33 +1613,49 @@
 
         
 function switchView(view) {
-    const botView = document.getElementById('main-cmd-center');
-    const pairContainer = document.getElementById('main-pairing-container');
-    const ownerSection = document.getElementById('main-owner-section');
+    const botContainer = document.getElementById('bot-view-container');
+    const ownerSection = document.querySelector('.owner-section');
     const btnBot = document.getElementById('btn-bot');
     const btnOwner = document.getElementById('btn-owner');
 
-    // Remove initial hidden class from all
-    [botView, pairContainer, ownerSection].forEach(el => {
-        if(el) el.classList.remove('hidden-start');
-    });
-
-    if (view === 'bot') {
-        // Show Bot Details
-        botView.style.display = 'none';
-        pairContainer.style.display = 'none';
-        ownerSection.style.display = 'none';
+    if (view === 'owner') {
+        // Switch to Owner View
+        botContainer.classList.add('hidden-view');
+        ownerSection.classList.add('active');
         
-        btnBot.classList.add('active');
-        btnOwner.classList.remove('active');
-    } else if (view === 'owner') {
-        // Show Owner Details
-        botView.style.display = 'none';
-        pairContainer.style.display = 'none';
-        ownerSection.style.display = 'flex';
-        
+        // UI Highlights
         btnOwner.classList.add('active');
         btnBot.classList.remove('active');
+    } else {
+        // Switch to Bot View
+        botContainer.classList.remove('hidden-view');
+        ownerSection.classList.remove('active');
+        
+        // UI Highlights
+        btnBot.classList.add('active');
+        btnOwner.classList.remove('active');
+    }
+}
+
+function showModule(moduleId, event) {
+    // 1. Hide all modules
+    document.querySelectorAll('.cmd-module').forEach(m => {
+        m.classList.remove('active');
+    });
+    
+    // 2. Remove active class from all category buttons
+    document.querySelectorAll('#bot-cmd-nav .nav-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+    
+    // 3. Show the selected module and highlight its button
+    const targetModule = document.getElementById(moduleId);
+    if (targetModule) {
+        targetModule.classList.add('active');
+    }
+    
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
     }
 }
 
